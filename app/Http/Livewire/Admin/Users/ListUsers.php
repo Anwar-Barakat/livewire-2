@@ -2,23 +2,24 @@
 
 namespace App\Http\Livewire\Admin\Users;
 
+use App\Http\Livewire\Admin\AdminComponent;
 use App\Models\User;
 use Illuminate\Support\Facades\Validator;
-use Livewire\Component;
-use Livewire\WithPagination;
 
-class ListUsers extends Component
+class ListUsers extends AdminComponent
 {
-    use WithPagination;
-
     public $stat = [];
-    public $showEditModal = false;
+    public $showEditModal   = false;
     public $user;
-    public $userIdToRemove = null;
+    public $userIdToRemove  = null;
+    public $searchTerm      = null;
 
     public function render()
     {
-        $users = User::orderBy('id', 'desc')->paginate(10);
+        $users = User::query()
+            ->where('name', 'like', '%' . $this->searchTerm . '%')
+            ->orWhere('email', 'like', '%' . $this->searchTerm . '%')
+            ->orderBy('id', 'desc')->paginate(10);
         return view('livewire.admin.users.list-users', ['users' => $users]);
     }
 

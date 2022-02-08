@@ -2,7 +2,7 @@
     <!-- Content Header (Page header) -->
     <div class="content-header">
         <div class="container-fluid">
-            <div class="row mb-2">
+            <div class="row mb-4">
                 <div class="col-sm-6">
                     <h1 class="m-0 text-dark">{{ __('Users') }}</h1>
                 </div><!-- /.col -->
@@ -22,28 +22,31 @@
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-lg-12">
+                        <div class="d-flex justify-content-between mb-2">
+                            <x-search-input wire:model="searchTerm" />
+                            <button class="btn btn-info" wire:click.prevent="addNew">
+                                <i class="fas fa-plus"></i> Create New User
+                            </button>
+                        </div>
                         <div class="card">
                             <div class="card-body">
-                                <div class="d-flex justify-content-end">
-                                    <button class="btn btn-info mb-2" wire:click.prevent="addNew">
-                                        <i class="fas fa-plus"></i> Create New User
-                                    </button>
-                                </div>
                                 <table class="table table-hover">
                                     <thead>
                                         <tr>
                                             <th scope="col">#</th>
                                             <th scope="col">Name</th>
                                             <th scope="col">Email</th>
+                                            <th scope="col">Registered</th>
                                             <th scope="col">Optioins</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody wire:loading.class="text-muted">
                                         @forelse ($users as $user)
                                             <tr>
-                                                <td>{{ $user->id }}</td>
+                                                <td>{{ $loop->iteration }}</td>
                                                 <td>{{ $user->name }}</td>
                                                 <td>{{ $user->email }}</td>
+                                                <td>{{ $user->created_at->toFormattedDate() }}</td>
                                                 <td class="">
                                                     <div class="w-50 d-flex justify-content-around">
                                                         <a href="" class="text-info"
@@ -59,11 +62,18 @@
                                             </tr>
                                         @empty
                                             <tr class="text-center">
-                                                <td colspan="4">No Users Yet !!</td>
+                                                <td colspan="5">
+                                                    <img src="{{ asset('AdminLTE/dist/img/search.png') }}"
+                                                        width="300" alt="">
+                                                    <p class="mt-3">No Users Found !!</p>
+                                                </td>
                                             </tr>
                                         @endforelse
                                     </tbody>
                                 </table>
+                                <div class="mt-3 d-flex justify-content-end">
+                                    {{ $users->links() }}
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -156,7 +166,7 @@
         </div>
     </div>
 
-    <!-- Add New User Modal -->
+    <!-- Delete User Modal -->
     <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
         aria-hidden="true" wire:ignore.self>
         <div class="modal-dialog" role="document">

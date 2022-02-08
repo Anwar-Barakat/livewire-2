@@ -20,7 +20,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
     <!-- Toastr -->
     <link rel="stylesheet" href="{{ asset('AdminLTE/plugins/toastr/toastr.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/custom.css') }}">
     @livewireStyles
+    @stack('css')
 </head>
 
 <body class="hold-transition sidebar-mini">
@@ -64,6 +66,11 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <script src="{{ asset('AdminLTE/dist/js/adminlte.min.js') }}"></script>
     <!-- Toastr -->
     <script src="{{ asset('AdminLTE/plugins/toastr/toastr.min.js') }}"></script>
+
+    {{-- Datepicker --}}
+    <script src="https://unpkg.com/moment"></script>
+    <script src="{{ asset('AdminLTE/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js') }}"></script>
+    @stack('js')
     <script>
         $(document).ready(() => {
             toastr.options = {
@@ -80,9 +87,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 $('#confirmationModal').modal('hide');
                 toastr.error(event.detail.message, 'Success');
             });
+
+            window.addEventListener('alert', event => {
+                toastr.success(event.detail.message, 'Success');
+            });
         });
     </script>
-    @livewireScripts
     <script>
         window.addEventListener('show-form', event => {
             $('#FormAddUser').modal('show');
@@ -92,7 +102,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
             $('#confirmationModal').modal('show');
         });
     </script>
-    @stack('scripts')
+
+    @livewireScripts
 </body>
 
 </html>
