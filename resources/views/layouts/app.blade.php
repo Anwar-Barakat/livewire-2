@@ -20,6 +20,10 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
     <!-- Toastr -->
     <link rel="stylesheet" href="{{ asset('AdminLTE/plugins/toastr/toastr.min.css') }}">
+    {{-- alphine js --}}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/2.3.0/alpine.js"></script>
+    {{-- checkbox css --}}
+    <link rel="stylesheet" href="{{ asset('AdminLTE/plugins/icheck-bootstrap/icheck-bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ asset('css/custom.css') }}">
     @livewireStyles
     @stack('css')
@@ -89,6 +93,10 @@ scratch. This page gets rid of all links and provides the needed markup only.
             });
 
             window.addEventListener('alert', event => {
+                toastr.success(event.detail.message, 'Success');
+            });
+
+            window.addEventListener('updated', event => {
                 toastr.success(event.detail.message, 'Success');
             });
         });

@@ -4,15 +4,20 @@ namespace App\Http\Livewire\Admin\Users;
 
 use App\Http\Livewire\Admin\AdminComponent;
 use App\Models\User;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Livewire\WithFileUploads;
 
 class ListUsers extends AdminComponent
 {
+    use WithFileUploads;
+
     public $stat = [];
     public $showEditModal   = false;
     public $user;
     public $userIdToRemove  = null;
     public $searchTerm      = null;
+    public $image;
 
     public function render()
     {
@@ -25,7 +30,7 @@ class ListUsers extends AdminComponent
 
     public function addNew()
     {
-        $this->stat             = [];
+        $this->reset();
         $this->showEditModal    = false;
         $this->dispatchBrowserEvent('show-form');
     }
@@ -38,7 +43,11 @@ class ListUsers extends AdminComponent
             'password'      => 'required|min:6|confirmed'
         ])->validate();
 
-        $validateData['password'] = bcrypt($validateData['password']);
+        $validateData['password']   = bcrypt($validateData['password']);
+
+        if ($this->image) {
+            $validateData['image']  = $this->image->store('/', 'avatars');
+        }
 
         User::create($validateData);
         $this->dispatchBrowserEvent('hide-form', ['message'  => 'User Added Successfully ']);
@@ -47,6 +56,7 @@ class ListUsers extends AdminComponent
 
     public function edit(User $user)
     {
+        $this->reset();
         $this->showEditModal = true;
         $this->stat = $user->toArray();
         $this->dispatchBrowserEvent('show-form');
@@ -65,6 +75,11 @@ class ListUsers extends AdminComponent
 
         if (!empty($validateData['password'])) {
             $validateData['password'] = bcrypt($validateData['password']);
+        }
+
+        if ($this->image) {
+            Storage::disk('avatars')->delete($this->user->image);
+            $validateData['image']  = $this->image->store('/', 'avatars');
         }
 
         $this->user->update($validateData);

@@ -35,6 +35,7 @@
                                         <tr>
                                             <th scope="col">#</th>
                                             <th scope="col">Name</th>
+                                            <th scope="col">Image</th>
                                             <th scope="col">Email</th>
                                             <th scope="col">Registered</th>
                                             <th scope="col">Optioins</th>
@@ -45,6 +46,10 @@
                                             <tr>
                                                 <td>{{ $loop->iteration }}</td>
                                                 <td>{{ $user->name }}</td>
+                                                <td>
+                                                    <img src="{{ $user->image_url }}" alt="" width="50px"
+                                                        class="img-circle img-thumbnail" style="height: 50px">
+                                                </td>
                                                 <td>{{ $user->email }}</td>
                                                 <td>{{ $user->created_at->toFormattedDate() }}</td>
                                                 <td class="">
@@ -104,6 +109,12 @@
                         </button>
                     </div>
                     <div class="modal-body">
+                        @if ($image)
+                            <img src="{{ $image->temporaryUrl() }}" class="img m-auto d-block" width="150" alt="">
+                            <hr>
+                        @else
+                            <img src="{{ $stat['image_url'] ?? '' }}" class="img m-auto d-block" width="150" alt="">
+                        @endif
                         <div class="form-group">
                             <label for="name">Name</label>
                             <input type="text" wire:model.defer="stat.name"
@@ -147,6 +158,33 @@
                                     {{ $message }}
                                 </div>
                             @enderror
+                        </div>
+                        <div class="form-group">
+                            <label for="customFile">Profile Image</label>
+                            <div class="custom-file">
+                                <div x-data="{ isUploading:false,progress:0 }"
+                                    x-on:livewire-upload-start="isUploading=true"
+                                    x-on:livewire-upload-finish="isUploading=false,progress=0"
+                                    x-on:livewire-upload-error="isUploading=false"
+                                    x-on:livewire-upload-progress="progress=$event.detail.progress">
+                                    <input wire:model="image" type="file" class="custom-file-input" id="customFile">
+                                    <div x-show="isUploading" class="progress progress-sm mt-3">
+                                        <div class="progress-bar bg-primary progress-bar-striped" role="progressbar"
+                                            aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"
+                                            x-bind:style="`width:${progress}%`">
+                                            <span class="sr-only">40% Complete (success)</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <label class="custom-file-label" for="customFile">
+                                    @if ($image)
+                                        {{ $image->getClientOriginalName() }}
+                                    @else
+                                        Choose Image
+                                    @endif
+                                </label>
+
+                            </div>
                         </div>
                     </div>
                     <div class="modal-footer">

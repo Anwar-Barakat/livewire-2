@@ -12,13 +12,32 @@ class ListAppointment extends AdminComponent
 
     public $appointmentId;
     public $listeners = ['deleteConfirmation' => 'DestroyAppointment'];
+    public $status = null;
+    public $selectedRows = [];
+    public $selectPageRows = false;
+
+    protected $queryString = ['status'];
 
     public function render()
     {
-        $appointments = Appointment::with('client')->orderBy('id', 'desc')->paginate(10);
+        $appointments = $this->appointments;
+
+        $appointmentsCount          = Appointment::count();
+        $scheduledAppointmentCount  = Appointment::where('status', 'SCHEDULED')->count();
+        $closedAppointmentsCount    = Appointment::where('status', 'CLOSED')->count();
+
         return view('livewire.admin.appointment.list-appointment', [
-            'appointments'   => $appointments
+            'appointments'              => $appointments,
+            'appointmentsCount'         => $appointmentsCount,
+            'scheduledAppointmentCount' => $scheduledAppointmentCount,
+            'closedAppointmentsCount'   => $closedAppointmentsCount,
         ]);
+    }
+
+    public function filterAppointmentsByStatus($status = null)
+    {
+        $this->resetPage();
+        $this->status = $status;
     }
 
     public function confirmAppointmentDelettion($id)
@@ -40,5 +59,52 @@ class ListAppointment extends AdminComponent
         $appointment = Appointment::where('id', $this->appointmentId)->delete();
 
         $this->dispatchBrowserEvent('deleted', ['message' => 'Appointment Deleted Successfully']);
+    }
+
+    public function getAppointmentsProperty()
+    {
+        return Appointment::with('client')
+            ->when($this->status, function ($query, $status) {
+                $query->where('status', $status);
+            })
+            ->orderBy('id', 'desc')
+            ->paginate(5);
+    }
+
+    public function updatedSelectPageRows($value)
+    {
+        if ($value) {
+            $this->selectedRows = $this->appointments->pluck('id')->map(function ($id) {
+                return (string) $id;
+            });
+        } else {
+            $this->reset(['selectedRows', 'selectPageRows']);
+        }
+    }
+    public function deleteSelectedRows()
+    {
+        Appointment::whereIn('id', $this->selectedRows)->delete();
+
+        $this->dispatchBrowserEvent('deleted', ['message' => "All Selected Appointment Deleted Successfully"]);
+
+        $this->reset(['selectedRows', 'selectPageRows']);
+    }
+
+    public function markAllScheduled()
+    {
+        Appointment::whereIn('id', $this->selectedRows)->update(['status' => 'SCHEDULED']);
+
+        $this->dispatchBrowserEvent('updated', ['message' => "All Selected Appointment Make Scheduled"]);
+
+        $this->reset(['selectedRows', 'selectPageRows']);
+    }
+
+    public function markAllClosed()
+    {
+        Appointment::whereIn('id', $this->selectedRows)->update(['status' => 'CLOSED']);
+
+        $this->dispatchBrowserEvent('updated', ['message' => "All Selected Appointment Make Closed"]);
+
+        $this->reset(['selectedRows', 'selectPageRows']);
     }
 }
