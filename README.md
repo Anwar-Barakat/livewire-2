@@ -19,3 +19,14 @@
 -   Dealing with Bulk Actions , in one click delete the all slected and
     more than actions
 
+---
+
+-   Dealing with breez auth
+-   Grand the specific user the admin role .
+-   Building the statistics Dashboard .
+
+--
+
+-   Create Settings Tab for controlling the "title , name , email , footer" of the site .
+-   Drag and Drop item to change its order
+-   Sorting the users table by name or email .

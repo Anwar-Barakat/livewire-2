@@ -30,28 +30,62 @@
                         </div>
                         <div class="card">
                             <div class="card-body">
-                                <table class="table table-hover">
+                                <table class="table table-hover table-bordered">
                                     <thead>
                                         <tr>
                                             <th scope="col">#</th>
-                                            <th scope="col">Name</th>
+                                            <th scope="col ">
+                                                <div class="d-flex justify-content-between">
+                                                    <span>Name</span>
+                                                    <span wire:click="sortBy('name')" class="sm"
+                                                        style="cursor: pointer">
+                                                        <i
+                                                            class="fa fa-arrow-up fa-sm {{ $sortColumn == 'name' && $sortDirection == 'asc' ? '' : 'text-muted' }}"></i>
+                                                        <i
+                                                            class="fa fa-arrow-down fa-sm {{ $sortColumn == 'name' && $sortDirection == 'desc' ? '' : 'text-muted' }}"></i>
+                                                    </span>
+                                                </div>
+                                            </th>
                                             <th scope="col">Image</th>
-                                            <th scope="col">Email</th>
+                                            <th scope="col">
+                                                <div class="d-flex justify-content-between">
+                                                    <span>Email</span>
+                                                    <span wire:click="sortBy('email')" class="sm"
+                                                        style="cursor: pointer">
+                                                        <i
+                                                            class="fa fa-arrow-up fa-sm {{ $sortColumn == 'email' && $sortDirection == 'asc' ? '' : 'text-muted' }}"></i>
+                                                        <i
+                                                            class="fa fa-arrow-down fa-sm {{ $sortColumn == 'email' && $sortDirection == 'desc' ? '' : 'text-muted' }}"></i>
+                                                    </span>
+                                                </div>
+                                            </th>
                                             <th scope="col">Registered</th>
+                                            <th scope="col">Role</th>
                                             <th scope="col">Optioins</th>
                                         </tr>
                                     </thead>
                                     <tbody wire:loading.class="text-muted">
-                                        @forelse ($users as $user)
+                                        @forelse ($users as $index => $user)
                                             <tr>
-                                                <td>{{ $loop->iteration }}</td>
+                                                <td>{{ $users->firstItem() + $index }}</td>
                                                 <td>{{ $user->name }}</td>
                                                 <td>
                                                     <img src="{{ $user->image_url }}" alt="" width="50px"
                                                         class="img-circle img-thumbnail" style="height: 50px">
                                                 </td>
                                                 <td>{{ $user->email }}</td>
-                                                <td>{{ $user->created_at->toFormattedDate() }}</td>
+                                                <td>{{ $user->created_at?->toFormattedDate() }}</td>
+                                                <td>
+                                                    <select class="form-control"
+                                                        wire:change="updateRole({{ $user }},$event.target.value)">
+                                                        <option value="admin"
+                                                            {{ $user->role == 'admin' ? 'selected' : '' }}>Admin
+                                                        </option>
+                                                        <option value="user"
+                                                            {{ $user->role == 'user' ? 'selected' : '' }}>User
+                                                        </option>
+                                                    </select>
+                                                </td>
                                                 <td class="">
                                                     <div class="w-50 d-flex justify-content-around">
                                                         <a href="" class="text-info"

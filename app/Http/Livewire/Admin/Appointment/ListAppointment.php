@@ -67,8 +67,8 @@ class ListAppointment extends AdminComponent
             ->when($this->status, function ($query, $status) {
                 $query->where('status', $status);
             })
-            ->orderBy('id', 'desc')
-            ->paginate(5);
+            ->orderBy('order_position', 'asc')
+            ->paginate(10);
     }
 
     public function updatedSelectPageRows($value)
@@ -106,5 +106,13 @@ class ListAppointment extends AdminComponent
         $this->dispatchBrowserEvent('updated', ['message' => "All Selected Appointment Make Closed"]);
 
         $this->reset(['selectedRows', 'selectPageRows']);
+    }
+
+    public function updateAppointmentOrder($items)
+    {
+        foreach ($items as $item)
+            Appointment::find($item['value'])->update(['order_position' => $item['order']]);
+
+        $this->dispatchBrowserEvent('updated', ['message' => "Appointment Ordered Successfully"]);
     }
 }

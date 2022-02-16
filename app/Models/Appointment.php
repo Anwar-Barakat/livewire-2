@@ -13,8 +13,9 @@ class Appointment extends Model
     protected $guarded = [];
 
     protected $casts = [
-        'date'  => 'datetime',
-        'time'  => 'datetime',
+        'date'      => 'datetime',
+        'time'      => 'datetime',
+        'members'   => 'array'
     ];
 
     public function client()

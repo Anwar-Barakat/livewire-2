@@ -4,6 +4,7 @@ namespace App\Http\Livewire\Admin\Users;
 
 use App\Http\Livewire\Admin\AdminComponent;
 use App\Models\User;
+use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Livewire\WithFileUploads;
@@ -17,14 +18,17 @@ class ListUsers extends AdminComponent
     public $user;
     public $userIdToRemove  = null;
     public $searchTerm      = null;
+    protected $queryString  = ['searchTerm' => ['except' => '']];
     public $image;
+    public $sortColumn      = 'created_at';
+    public $sortDirection   = 'DESC';
 
     public function render()
     {
         $users = User::query()
             ->where('name', 'like', '%' . $this->searchTerm . '%')
             ->orWhere('email', 'like', '%' . $this->searchTerm . '%')
-            ->orderBy('id', 'desc')->paginate(10);
+            ->orderBy($this->sortColumn, $this->sortDirection)->paginate(10);
         return view('livewire.admin.users.list-users', ['users' => $users]);
     }
 
@@ -97,5 +101,37 @@ class ListUsers extends AdminComponent
     {
         $user = User::where('id', $this->userIdToRemove)->delete();
         $this->dispatchBrowserEvent('hide-delete-modal', ['message'  => 'User deleted Successfully ']);
+    }
+
+    public function updateRole(User $user, $role)
+    {
+        Validator::make(['role' => $role], [
+            'role'  => [
+                'required',
+                Rule::in(User::ROLE_ADMIN, User::ROLE_USER)
+            ]
+        ])->validate();
+        $user->update(['role'   => $role]);
+        $this->dispatchBrowserEvent('updated', ['message'  => "Role Changed to ({$role}) Successfully"]);
+    }
+
+    public function sortBy($sort)
+    {
+        if ($this->sortColumn == $sort)
+            $this->sortDirection    = $this->swapSortDirection();
+        else
+            $this->sortDirection    = 'ASC';
+
+        $this->sortColumn       = $sort;
+    }
+
+    public function swapSortDirection()
+    {
+        return $this->sortDirection == 'asc' ? 'desc' : 'asc';
+    }
+
+    public function updatedSearchTerm()
+    {
+        $this->resetPage();
     }
 }

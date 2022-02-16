@@ -57,8 +57,10 @@
                                                 <a wire:click.prevent="deleteSelectedRows" class="dropdown-item"
                                                     href="#">Delete Selected</a>
                                                 <div class="dropdown-divider"></div>
-                                                <a wire:click.prevent="markAllScheduled" class="dropdown-item" href="#">Mark as Scheduled</a>
-                                                <a wire:click.prevent="markAllClosed" class="dropdown-item" href="#">Mark as Closed</a>
+                                                <a wire:click.prevent="markAllScheduled" class="dropdown-item"
+                                                    href="#">Mark as Scheduled</a>
+                                                <a wire:click.prevent="markAllClosed" class="dropdown-item"
+                                                    href="#">Mark as Closed</a>
                                             </div>
                                         </button>
                                     </div>
@@ -79,6 +81,7 @@
                                 <table class="table table-hover">
                                     <thead>
                                         <tr>
+                                            <th></th>
                                             <th>
                                                 <div class="icheck-primary d-inline ml-2">
                                                     <input wire:model="selectPageRows" type="checkbox" value=""
@@ -94,9 +97,13 @@
                                             <th scope="col">Actions</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
-                                        @forelse ($appointments as $appointment)
-                                            <tr>
+                                    <tbody wire:sortable="updateAppointmentOrder">
+                                        @forelse ($appointments as $index => $appointment)
+                                            <tr wire:sortable.item="{{ $appointment->id }}"
+                                                wire:key="appointment-{{ $appointment->id }}">
+                                                <td wire:sortable.handle style="cursor: pointer">
+                                                    <i class="fas fa-arrows-alt" aria-hidden="true"></i>
+                                                </td>
                                                 <td>
                                                     <div class="icheck-primary d-inline ml-2">
                                                         <input wire:model="selectedRows" type="checkbox"
@@ -105,7 +112,7 @@
                                                         <label for="{{ $appointment->id }}"></label>
                                                     </div>
                                                 </td>
-                                                <td>{{ $loop->iteration }}</td>
+                                                <td>{{ $appointments->firstItem() + $index }}</td>
                                                 <td>{{ $appointment->client->name }}</td>
                                                 <td>{{ $appointment->date }}</td>
                                                 <td>{{ $appointment->time }}</td>
@@ -143,7 +150,6 @@
                                 </div>
                             </div>
                         </div>
-                        @dump($selectedRows)
                     </div>
                 </div>
                 <!-- /.row -->
@@ -156,3 +162,17 @@
 
     <x-confirmation-alert />
 </div>
+
+@push('css')
+    <style>
+        .draggable-mirror {
+            background-color: rgb(255, 255, 255);
+            width: 80%;
+            box-shadow: box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+            display: flex;
+            justify-content: space-between;
+
+        }
+
+    </style>
+@endpush

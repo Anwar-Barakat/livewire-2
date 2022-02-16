@@ -10,7 +10,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
 
-    <title>Admin Livewire Dashboard</title>
+    <title>{{ settings('site_title') }}</title>
 
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="{{ asset('AdminLTE/plugins/fontawesome-free/css/all.min.css') }}">
@@ -25,11 +25,18 @@ scratch. This page gets rid of all links and provides the needed markup only.
     {{-- checkbox css --}}
     <link rel="stylesheet" href="{{ asset('AdminLTE/plugins/icheck-bootstrap/icheck-bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ asset('css/custom.css') }}">
-    @livewireStyles
     @stack('css')
+    @livewireStyles
+
+    <style>
+        .sidebar {
+            overflow-y: unset;
+        }
+
+    </style>
 </head>
 
-<body class="hold-transition sidebar-mini">
+<body class="hold-transition sidebar-mini {{ settings('sidebar_coll') ? 'sidebar-collapse' : '' }}">
     <div class="wrapper">
 
         <!-- Navbar -->
@@ -74,6 +81,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
     {{-- Datepicker --}}
     <script src="https://unpkg.com/moment"></script>
     <script src="{{ asset('AdminLTE/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js') }}"></script>
+
     @stack('js')
     <script>
         $(document).ready(() => {
@@ -81,21 +89,17 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 "progressBar": true,
                 "positionClass": "toast-top-right",
             }
-
             window.addEventListener('hide-form', event => {
                 $('#FormAddUser').modal('hide');
                 toastr.success(event.detail.message, 'Success');
             });
-
             window.addEventListener('hide-delete-modal', event => {
                 $('#confirmationModal').modal('hide');
                 toastr.error(event.detail.message, 'Success');
             });
-
             window.addEventListener('alert', event => {
                 toastr.success(event.detail.message, 'Success');
             });
-
             window.addEventListener('updated', event => {
                 toastr.success(event.detail.message, 'Success');
             });
@@ -105,13 +109,15 @@ scratch. This page gets rid of all links and provides the needed markup only.
         window.addEventListener('show-form', event => {
             $('#FormAddUser').modal('show');
         });
-
         window.addEventListener('show-delete-modal', event => {
             $('#confirmationModal').modal('show');
         });
     </script>
 
     @livewireScripts
+
+    {{-- livewire Sortable --}}
+    <script src="https://cdn.jsdelivr.net/gh/livewire/sortable@v0.x.x/dist/livewire-sortable.js"></script>
 </body>
 
 </html>

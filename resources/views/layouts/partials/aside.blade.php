@@ -2,15 +2,16 @@
     <!-- Sidebar -->
     <div class="sidebar pt-3">
         <!-- Sidebar user panel (optional) -->
-        <div class="user-panel mt-3 pb-3 mb-3 d-flex justify-content-center align-items-center text-center flex-column">
-            <div class="image">
-                <img src="{{ asset('AdminLTE/dist/img/user2-160x160.jpg') }}"
-                    class="img-circle elevation-2 sidebar-photo" alt="User Image">
+        <div class="brand-text mt-3 pb-3 mb-3 d-flex justify-content-center align-items-center text-center flex-column">
+            <div class="image mb-3">
+                <img src="{{ auth()->user()->image_url }}" id="profileImage" width="150px" height="150px"
+                    class="img img-circle  sidebar-photo" alt="User Image"
+                    style="box-shadow: 0 5px 10px #333;padding: 7px;">
             </div>
             <div class="info">
-                <a href="#" class="d-block mb-2">Anwar Barakat</a>
-                <a href="index3.html" class="brand-link">
-                    <span class="brand-text font-weight-light">Livewire Dashboard</span>
+                <a href="#" class="brand-text d-block mb-2">{{ auth()->user()->name }}</a>
+                <a href="javascript:void(0);" class="brand-link">
+                    <span class="brand-text font-weight-light">{{ settings('site_name') }}</span>
                 </a>
             </div>
         </div>
@@ -39,27 +40,32 @@
                 <li class="nav-item">
                     <a href="{{ route('admin.appointments') }}"
                         class="nav-link {{ request()->routeIs('admin.appointments') ? 'active' : '' }}">
-                        <i class="nav-icon fas fa-calendar-alt"></i>
+                        <i class="nav-icon fas fa-envelope"></i>
                         <p>
                             {{ __('Appointments') }}
                         </p>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="" class="nav-link">
-                        <i class="nav-icon fas fa-tachometer-alt"></i>
+                    <a href="{{ route('admin.settings') }}"
+                        class="nav-link {{ request()->routeIs('admin.settings') ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-cogs"></i>
                         <p>
                             {{ __('Settings') }}
                         </p>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="" class="nav-link">
-                        <i class="nav-icon fas fa-tachometer-alt"></i>
-                        <p>
-                            {{ __('Logout') }}
-                        </p>
-                    </a>
+                    <form action="{{ route('logout') }}" method="post">
+                        @csrf
+                        <a href="{{ route('logout') }}"
+                            onclick="event.preventDefault();this.closest('form').submit()" class="nav-link">
+                            <i class="nav-icon fa fa-sign-out-alt"></i>
+                            <p>
+                                {{ __('Logout') }}
+                            </p>
+                        </a>
+                    </form>
                 </li>
             </ul>
         </nav>

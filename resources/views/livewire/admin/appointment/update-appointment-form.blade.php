@@ -44,6 +44,23 @@
                                             @enderror
                                         </div>
                                     </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group" wire:ignore>
+                                            <label>Select Team</label>
+                                            <select id="team" class="select2 select2-hidden-accessible" multiple=""
+                                                data-placeholder="Select a State" style="width: 100%;"
+                                                data-select2-id="7" tabindex="-1" aria-hidden="true"
+                                                wire:model="state.members">
+                                                <option data-select2-id="32">Alabama</option>
+                                                <option data-select2-id="33">Alaska</option>
+                                                <option data-select2-id="34">California</option>
+                                                <option data-select2-id="35">Delaware</option>
+                                                <option data-select2-id="36">Tennessee</option>
+                                                <option data-select2-id="37">Texas</option>
+                                                <option data-select2-id="38">Washington</option>
+                                            </select>
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <div class="row">
@@ -131,7 +148,23 @@
         </div>
     </div>
 </div>
-
+@push('css')
+    <!-- Select2 -->
+    <link rel="stylesheet" href="{{ asset('AdminLTE/plugins/select2/css/select2.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('AdminLTE/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css') }}">
+@endpush
+@push('js')
+    <script src="{{ asset('AdminLTE/plugins/select2/js/select2.full.min.js') }}"></script>
+    <script>
+        $(function() {
+            $('.select2').select2({
+                theme: "bootstrap4"
+            }).on('change', function() {
+                @this.set('state.members', $(this).val());
+            });
+        });
+    </script>
+@endpush
 @push('js')
     {{-- CDeditor --}}
     <script src="https://cdn.ckeditor.com/ckeditor5/32.0.0/classic/ckeditor.js"></script>
