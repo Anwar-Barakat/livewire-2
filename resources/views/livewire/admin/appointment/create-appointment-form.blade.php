@@ -44,22 +44,7 @@
                                             @enderror
                                         </div>
                                     </div>
-                                    {{-- <div class="col-md-6">
-                                        <div class="form-group" wire:ignore>
-                                            <label>Select Team</label>
-                                            <select class="select2 select2-hidden-accessible" multiple=""
-                                                data-placeholder="Select a State" style="width: 100%;"
-                                                data-select2-id="7" tabindex="-1" aria-hidden="true">
-                                                <option data-select2-id="32">Alabama</option>
-                                                <option data-select2-id="33">Alaska</option>
-                                                <option data-select2-id="34">California</option>
-                                                <option data-select2-id="35">Delaware</option>
-                                                <option data-select2-id="36">Tennessee</option>
-                                                <option data-select2-id="37">Texas</option>
-                                                <option data-select2-id="38">Washington</option>
-                                            </select>
-                                        </div>
-                                    </div> --}}
+
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label>Select Team</label>
